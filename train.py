@@ -9,16 +9,20 @@ from tensorflow.keras.preprocessing.image import ImageDataGenerator
 import cv2
 from ocr_engine.models.resnet import ResNet
 from ocr_engine.dataset.helpers import load_dataset
+import argparse
 
 # set the matplotlib backend so figures can be saved in the background
 import matplotlib
 matplotlib.use("Agg")
 
-# import the necessary packages
+# construct the argument parser and parse the arguments
+ap = argparse.ArgumentParser()
+ap.add_argument("-d", "--dataset", required=True,
+	help="path to dataset")
+args = vars(ap.parse_args())
 
 print("[INFO] Loading datasets...")
-images, labels = load_dataset(
-	"../Datasets/DatasetGeneration/Calibri-MSWord-Images")
+images, labels = load_dataset(args['dataset'])
 assert len(images) == len(labels)
 
 # initialize the number of epochs to train for, initial learning rate,
