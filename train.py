@@ -89,7 +89,7 @@ H = model.fit(
 	verbose=1)
 
 # define the list of label names
-labelNames = set(labels)
+labelNames = np.unique(labels)
 
 # evaluate the network
 print("[INFO] Evaluating network...")
