@@ -39,8 +39,8 @@ images = np.array(images, dtype="float32")
 
 # add a channel dimension to every image in the dataset and scale the
 # pixel intensities of the images from [0, 255] down to [0, 1]
-# images = np.expand_dims(images, axis=-1)
-# images /= 255.0
+images = np.expand_dims(images, axis=-1)
+images /= 255.0
 
 # convert the labels from integers to vectors
 le = LabelBinarizer()
