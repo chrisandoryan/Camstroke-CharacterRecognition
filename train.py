@@ -103,6 +103,7 @@ H = model.fit(
 
 # evaluate the network
 print("[INFO] Evaluating network...")
+labelNames = [chr(l + 97) for l in labelNames]
 predictions = model.predict(testX, batch_size=BS)
 print(classification_report(testY.argmax(axis=1),
 	predictions.argmax(axis=1), target_names=labelNames))
