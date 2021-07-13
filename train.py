@@ -40,7 +40,7 @@ print(labelNames)
 
 # initialize the number of epochs to train for, initial learning rate,
 # and batch size
-EPOCHS = 30
+EPOCHS = 50
 INIT_LR = 1e-1
 BS = 128
 
