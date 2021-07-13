@@ -8,7 +8,7 @@ from tensorflow.keras.optimizers import SGD
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 import cv2
 from ocr_engine.models.resnet import ResNet
-from ocr_engine.dataset.helpers import load_dataset
+from ocr_engine.dataset.helpers import load_az_dataset, load_dataset, load_mnist_dataset, stack_dataset
 import argparse
 
 # set the matplotlib backend so figures can be saved in the background
@@ -18,20 +18,33 @@ matplotlib.use("Agg")
 # construct the argument parser and parse the arguments
 ap = argparse.ArgumentParser()
 ap.add_argument("-d", "--dataset", required=True,
-	help="path to dataset")
+	help="path to Camstroke dataset")
+ap.add_argument("-az", "--az", required=True,
+	help="path to A-Z dataset")
 args = vars(ap.parse_args())
 
 print("[INFO] Loading datasets...")
-images, labels = load_dataset(args['dataset'])
-assert len(images) == len(labels)
+camstrokeImages, camstrokeLabels = load_dataset(args['dataset'])
+assert len(camstrokeImages) == len(camstrokeLabels)
+
+azImages, azLabels = load_az_dataset(args["az"])
+# digitImages, digitLabels = load_mnist_dataset()
+
+images, labels = stack_dataset((camstrokeImages, azImages), (camstrokeLabels, azLabels))
+
+print("[INFO] Total data: ", len(images))
+
+# define the list of label names
+labelNames = np.unique(labels)
+print(labelNames)
 
 # initialize the number of epochs to train for, initial learning rate,
 # and batch size
-EPOCHS = 50
+EPOCHS = 30
 INIT_LR = 1e-1
 BS = 128
 
-# each image in the A-Z and MNIST digts datasets are 28x28 pixels;
+# each image in the datasets are 28x28 pixels;
 # however, the architecture we're using is designed for 32x32 images,
 # so we need to resize them to 32x32
 images = [cv2.resize(image, (32, 32)) for image in images]
@@ -88,9 +101,6 @@ H = model.fit(
 	class_weight=classWeight,
 	verbose=1)
 
-# define the list of label names
-labelNames = np.unique(labels)
-
 # evaluate the network
 print("[INFO] Evaluating network...")
 predictions = model.predict(testX, batch_size=BS)
@@ -99,7 +109,7 @@ print(classification_report(testY.argmax(axis=1),
 
 # save the model to disk
 print("[INFO] serializing network...")
-model.save("camstroke-ocr.model", save_format="h5")
+model.save("ocr.model", save_format="h5")
 
 # construct a plot that plots and saves the training history
 N = np.arange(0, EPOCHS)
@@ -112,3 +122,33 @@ plt.xlabel("Epoch #")
 plt.ylabel("Loss/Accuracy")
 plt.legend(loc="lower left")
 plt.savefig("plot.png")
+
+# initialize our list of output test images
+images = []
+# randomly select a few testing characters
+for i in np.random.choice(np.arange(0, len(testY)), size=(49,)):
+	# classify the character
+	probs = model.predict(testX[np.newaxis, i])
+	prediction = probs.argmax(axis=1)
+	label = labelNames[prediction[0]]
+	# extract the image from the test data and initialize the text
+	# label color as green (correct)
+	image = (testX[i] * 255).astype("uint8")
+	color = (0, 255, 0)
+	# otherwise, the class label prediction is incorrect
+	if prediction[0] != np.argmax(testY[i]):
+		color = (0, 0, 255)
+	# merge the channels into one image, resize the image from 32x32
+	# to 96x96 so we can better see it and then draw the predicted
+	# label on the image
+	image = cv2.merge([image] * 3)
+	image = cv2.resize(image, (96, 96), interpolation=cv2.INTER_LINEAR)
+	cv2.putText(image, label, (5, 20), cv2.FONT_HERSHEY_SIMPLEX, 0.75,
+		color, 2)
+	# add the image to our list of output images
+	images.append(image)
+# construct the montage for the images
+montage = build_montages(images, (96, 96), (7, 7))[0]
+# show the output montage
+cv2.imshow("OCR Results", montage)
+cv2.waitKey(0)
