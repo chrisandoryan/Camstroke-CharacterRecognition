@@ -40,9 +40,9 @@ print(labelNames)
 
 # initialize the number of epochs to train for, initial learning rate,
 # and batch size
-EPOCHS = 50
+EPOCHS = 10
 INIT_LR = 1e-1
-BS = 128
+BS = 256
 
 # each image in the datasets are 28x28 pixels;
 # however, the architecture we're using is designed for 32x32 images,
