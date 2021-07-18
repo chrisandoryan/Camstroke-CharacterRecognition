@@ -27,11 +27,10 @@ print("[INFO] Loading datasets...")
 camstrokeImages, camstrokeLabels = load_dataset(args['dataset'])
 assert len(camstrokeImages) == len(camstrokeLabels)
 
-# azImages, azLabels = load_az_dataset(args["az"])
+azImages, azLabels = load_az_dataset(args["az"])
 # digitImages, digitLabels = load_mnist_dataset()
 
-# images, labels = stack_dataset((camstrokeImages, azImages), (camstrokeLabels, azLabels))
-images, labels = (camstrokeImages, camstrokeLabels)
+images, labels = stack_dataset((camstrokeImages, azImages), (camstrokeLabels, azLabels))
 
 print("[INFO] Total data: ", len(images))
 
