@@ -58,8 +58,8 @@ images = np.array(images, dtype="float32")
 images = np.expand_dims(images, axis=-1)
 images /= 255.0
 
-print(type(images))
-input()
+# print(type(images))
+# input()
 
 # convert the labels from integers to vectors
 le = LabelBinarizer()
