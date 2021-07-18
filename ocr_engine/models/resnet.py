@@ -12,6 +12,7 @@ from tensorflow.keras.models import Model
 from tensorflow.keras.layers import add
 from tensorflow.keras.regularizers import l2
 from tensorflow.keras import backend as K
+from tensorflow.python.keras.optimizer_v2.gradient_descent import SGD
 
 class ResNet:
 	@staticmethod
@@ -107,3 +108,12 @@ class ResNet:
 
 		# return the constructed network architecture
 		return model
+	
+def create_model(n_class):
+	model = ResNet.build(32, 32, 1, n_class, (3, 3, 3), (64, 64, 128, 256), reg=0.0005)
+	return model
+
+def load_model(path_to_weight, n_class):
+	model = create_model(n_class)
+	model.load_weights(path_to_weight)
+	return model

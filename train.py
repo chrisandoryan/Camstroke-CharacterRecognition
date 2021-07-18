@@ -7,7 +7,7 @@ from sklearn.preprocessing import LabelBinarizer
 from tensorflow.keras.optimizers import SGD
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 import cv2
-from ocr_engine.models.resnet import ResNet
+from ocr_engine.models.resnet import ResNet, create_model
 from ocr_engine.dataset.helpers import load_az_dataset, load_dataset, load_mnist_dataset, stack_dataset
 import argparse
 
@@ -39,10 +39,14 @@ labelNames = np.unique(labels)
 print(labelNames)
 
 # initialize the number of epochs to train for, initial learning rate,
-# and batch size
-EPOCHS = 10
-INIT_LR = 1e-1
-BS = 256
+# and batch size, read them from config file.
+from configparser import ConfigParser
+config = ConfigParser()
+config.read('./config/config.ini')
+
+EPOCHS = config.get('resnet', 'EPOCHS')
+INIT_LR = config.get('resnet', 'INIT_LR')
+BS = config.get('resnet', 'BS')
 
 # each image in the datasets are 28x28 pixels;
 # however, the architecture we're using is designed for 32x32 images,
@@ -54,6 +58,9 @@ images = np.array(images, dtype="float32")
 # pixel intensities of the images from [0, 255] down to [0, 1]
 images = np.expand_dims(images, axis=-1)
 images /= 255.0
+
+print(type(images))
+input()
 
 # convert the labels from integers to vectors
 le = LabelBinarizer()
@@ -86,10 +93,8 @@ aug = ImageDataGenerator(
 # initialize and compile our deep neural network
 print("[INFO] Compiling model...")
 opt = SGD(lr=INIT_LR, decay=INIT_LR / EPOCHS)
-model = ResNet.build(32, 32, 1, len(le.classes_), (3, 3, 3),
-                     (64, 64, 128, 256), reg=0.0005)
-model.compile(loss="categorical_crossentropy", optimizer=opt,
-              metrics=["accuracy"])
+model = create_model(n_class=len(le.classes_))
+model.compile(loss="categorical_crossentropy", optimizer=opt, metrics=["accuracy"])
 
 # train the network
 print("[INFO] Training network...")
