@@ -44,9 +44,9 @@ from configparser import ConfigParser
 config = ConfigParser()
 config.read('./config/config.ini')
 
-EPOCHS = config.get('resnet', 'EPOCHS')
-INIT_LR = config.get('resnet', 'INIT_LR')
-BS = config.get('resnet', 'BS')
+EPOCHS = config.getint('resnet', 'EPOCHS')
+INIT_LR = config.getint('resnet', 'INIT_LR')
+BS = config.getint('resnet', 'BS')
 
 # each image in the datasets are 28x28 pixels;
 # however, the architecture we're using is designed for 32x32 images,
