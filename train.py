@@ -19,8 +19,6 @@ matplotlib.use("Agg")
 ap = argparse.ArgumentParser()
 ap.add_argument("-d", "--dataset", required=True,
 	help="path to Camstroke dataset")
-ap.add_argument("-az", "--az", required=True,
-	help="path to A-Z dataset")
 args = vars(ap.parse_args())
 
 print("[INFO] Loading datasets...")
