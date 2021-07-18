@@ -45,7 +45,7 @@ config = ConfigParser()
 config.read('./config/config.ini')
 
 EPOCHS = config.getint('resnet', 'EPOCHS')
-INIT_LR = config.getint('resnet', 'INIT_LR')
+INIT_LR = config.getfloat('resnet', 'INIT_LR')
 BS = config.getint('resnet', 'BS')
 
 # each image in the datasets are 28x28 pixels;
