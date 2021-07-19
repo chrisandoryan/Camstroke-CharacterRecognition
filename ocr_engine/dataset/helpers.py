@@ -16,7 +16,7 @@ def load_dataset(datasetPath):
 			image = cv2.resize(image, (28, 28))
 			image = np.array(image, dtype="float32")
 			images.append(image)
-			labels.append(ord(label) - 97)
+			labels.append(label)
 
 	return images, labels
 

@@ -26,6 +26,7 @@ args = vars(ap.parse_args())
 print("[INFO] Loading datasets...")
 camstrokeImages, camstrokeLabels = load_dataset(args['dataset'])
 assert len(camstrokeImages) == len(camstrokeLabels)
+camstrokeLabels = [(ord(label) - 97) for label in camstrokeLabels]
 
 azImages, azLabels = load_az_dataset(args["az"])
 # digitImages, digitLabels = load_mnist_dataset()
