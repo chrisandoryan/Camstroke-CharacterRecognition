@@ -78,7 +78,8 @@ for i in range(0, len(classTotals)):
 # the data for training and the remaining 20% for testing
 (trainX, testX, trainY, testY) = train_test_split(images,
                                                   labels, test_size=0.20, stratify=labels, random_state=42)
-
+(testX, valX, testY, valY) = train_test_split(testX,
+                                                  testY, test_size=0.50, stratify=labels, random_state=42)
 # construct the image generator for data augmentation
 aug = ImageDataGenerator(
 	rotation_range=10,
@@ -99,7 +100,7 @@ model.compile(loss="categorical_crossentropy", optimizer=opt, metrics=["accuracy
 print("[INFO] Training network...")
 H = model.fit(
 	aug.flow(trainX, trainY, batch_size=BS),
-	validation_data=(testX, testY),
+	validation_data=(valX, valY),
 	steps_per_epoch=len(trainX) // BS,
 	epochs=EPOCHS,
 	class_weight=classWeight,

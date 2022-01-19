@@ -33,6 +33,7 @@ def predict():
     im = read_image("../Results/captured_keystroke_1.png")
     probs = model.predict(im)
     prediction = probs.argmax(axis=1)
+    print(prediction)
     label = _labelNames[prediction[0]]
     return label
 
