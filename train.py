@@ -79,7 +79,7 @@ for i in range(0, len(classTotals)):
 (trainX, testX, trainY, testY) = train_test_split(images,
                                                   labels, test_size=0.20, stratify=labels, random_state=42)
 (testX, valX, testY, valY) = train_test_split(testX,
-                                                  testY, test_size=0.50, stratify=labels, random_state=42)
+                                                  testY, test_size=0.50, stratify=testY, random_state=42)
 # construct the image generator for data augmentation
 aug = ImageDataGenerator(
 	rotation_range=10,
