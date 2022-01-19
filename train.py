@@ -123,11 +123,23 @@ plt.style.use("ggplot")
 plt.figure()
 plt.plot(N, H.history["loss"], label="train_loss")
 plt.plot(N, H.history["val_loss"], label="val_loss")
-plt.title("Training Loss and Accuracy")
+plt.title("Training Loss")
 plt.xlabel("Epoch #")
-plt.ylabel("Loss/Accuracy")
+plt.ylabel("Loss")
 plt.legend(loc="lower left")
-plt.savefig("plot.png")
+plt.savefig("loss_plot.png")
+
+# construct a plot that plots and saves the training history
+N = np.arange(0, EPOCHS)
+plt.style.use("ggplot")
+plt.figure()
+plt.plot(N, H.history["acc"], label="train_acc")
+plt.plot(N, H.history["val_acc"], label="val_acc")
+plt.title("Training Accuracy")
+plt.xlabel("Epoch #")
+plt.ylabel("Accuracy")
+plt.legend(loc="lower left")
+plt.savefig("acc_plot.png")
 
 # initialize our list of output test images
 images = []
@@ -157,5 +169,5 @@ for i in np.random.choice(np.arange(0, len(testY)), size=(49,)):
 montage = build_montages(images, (96, 96), (7, 7))[0]
 # show the output montage
 # cv2.imshow("OCR Results", montage)
-cv2.imsave("montage.png", montage)
+cv2.imwrite("montage.png", montage)
 # cv2.waitKey(0)
